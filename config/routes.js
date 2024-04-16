@@ -50,9 +50,14 @@ module.exports.routes = {
 
   'GET /update': 'VersionController.redirect',
   'GET /update/:platform/latest-mac.yml': 'VersionController.electronUpdaterMac',
-  'GET /update/:platform/:channel-mac.yml': 'VersionController.electronUpdaterMac',
   'GET /update/:platform/latest.yml': 'VersionController.electronUpdaterWin',
-  'GET /update/:platform/:channel.yml': 'VersionController.electronUpdaterWin',
+  // GET /update/:platform/:channel-mac.yml
+  // GET /update/:platform/:channel.yml
+  'GET /update/:platform/:channelFileName(.*\\.yml)': {
+    controller: 'VersionController',
+    action: 'electronUpdaterYmlFile',
+    skipAssets: false,
+  },
   'GET /update/:platform/:version': 'VersionController.general',
   'GET /update/:platform/:channel/latest.yml': 'VersionController.electronUpdaterWin',
   'GET /update/:platform/:channel/latest-mac.yml': 'VersionController.electronUpdaterMac',
@@ -64,11 +69,16 @@ module.exports.routes = {
   'GET /update/flavor/:flavor/:platform/:version/RELEASES': 'VersionController.windows',
   'GET /update/flavor/:flavor/:platform/:version/:channel/RELEASES': 'VersionController.windows',
   'GET /update/flavor/:flavor/:platform/latest.yml': 'VersionController.electronUpdaterWin',
-  'GET /update/flavor/:flavor/:platform/:channel.yml': 'VersionController.electronUpdaterWin',
   'GET /update/flavor/:flavor/:platform/:channel/latest.yml': 'VersionController.electronUpdaterWin',
   'GET /update/flavor/:flavor/:platform/latest-mac.yml': 'VersionController.electronUpdaterMac',
-  'GET /update/flavor/:flavor/:platform/:channel-mac.yml': 'VersionController.electronUpdaterMac',
   'GET /update/flavor/:flavor/:platform/:channel/latest-mac.yml': 'VersionController.electronUpdaterMac',
+  // GET /update/flavor/:flavor/:platform/:channel-mac.yml
+  // GET /update/flavor/:flavor/:platform/:channel.yml
+  'GET /update/flavor/:flavor/:platform/:channelFileName(.*\\.yml)': {
+    controller: 'VersionController',
+    action: 'electronUpdaterYmlFile',
+    skipAssets: false,
+  },
 
   'GET /notes/:version/:flavor?': 'VersionController.releaseNotes',
 

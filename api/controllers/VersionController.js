@@ -10,11 +10,11 @@ var url = require('url');
 var Promise = require('bluebird');
 var semver = require('semver');
 var compareVersions = require('compare-versions');
+var channelsConfig = require('../../config/channels');
 
 const availabilityFilter = () => ({ '<=': (new Date()).toISOString() });
 
-module.exports = {
-
+const controllers = {
   /**
    * Set availability date of specified version
    *
@@ -450,9 +450,9 @@ module.exports = {
    * (GET /update/flavor/:flavor/:platform/:channel.yml)
    * (GET /update/flavor/:flavor/:platform/:channel/latest.yml)
    */
-  electronUpdaterWin: function(req, res) {
+  electronUpdaterWin: function(req, res, channel) {
     var platform = req.param('platform');
-    var channel = req.param('channel') || 'stable';
+    channel = channel || req.param('channel') || 'stable';
     const flavor = req.params.flavor || 'default';
 
     if (!platform) {
@@ -539,11 +539,11 @@ module.exports = {
    * (GET /update/flavor/:flavor/:platform/:channel-mac.yml)
    * (GET /update/flavor/:flavor/:platform/:channel/latest-mac.yml)
    */
-  electronUpdaterMac: function(req, res) {
+  electronUpdaterMac: function(req, res, channel) {
     var platform = req.param('platform');
-    var channel = req.param('channel') || 'stable';
+    channel = channel || req.param('channel') || 'stable';
     const flavor = req.params.flavor || 'default';
-
+    
     if (!platform) {
       return res.badRequest('Requires `platform` parameter');
     }
@@ -615,6 +615,27 @@ module.exports = {
           res.notFound();
         }
       });
+  },
+
+
+  electronUpdaterYmlFile: function(req, res) {
+    const fileName = req.param('channelFileName');
+    const fileWithoutExt = fileName.replace('.yml', '').replace('.yaml', '');
+    const isMac = fileWithoutExt.endsWith('-mac');
+    const pure = fileWithoutExt.replace('-mac', '').replace('-win', '');
+    let channel = req.param('channel') || 'stable';
+    if (pure !== 'latest') {
+      if (!channelsConfig.channels.includes(pure)) {
+        return res.notFound();
+      }
+      channel = pure;
+    }
+
+    if (isMac) {
+      return controllers.electronUpdaterMac(req, res, channel);
+    }
+
+    return controllers.electronUpdaterWin(req, res, channel);
   },
 
   /**
@@ -704,3 +725,5 @@ module.exports = {
     });
   }
 };
+
+module.exports = controllers
