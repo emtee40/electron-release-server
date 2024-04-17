@@ -53,10 +53,12 @@ module.exports.routes = {
   'GET /update/:platform/latest.yml': 'VersionController.electronUpdaterWin',
   // GET /update/:platform/:channel-mac.yml
   // GET /update/:platform/:channel.yml
-  'GET /update/:platform/:channelFileName(.*\\.yml)': {
+  'GET /update/:platform/:channelFileName': {
     controller: 'VersionController',
     action: 'electronUpdaterYmlFile',
     skipAssets: false,
+    // Skip not ending with yml / yaml
+    skipRegex: /^(?!.*\.(yml|yaml)$).*$/,
   },
   'GET /update/:platform/:version': 'VersionController.general',
   'GET /update/:platform/:channel/latest.yml': 'VersionController.electronUpdaterWin',
@@ -74,10 +76,12 @@ module.exports.routes = {
   'GET /update/flavor/:flavor/:platform/:channel/latest-mac.yml': 'VersionController.electronUpdaterMac',
   // GET /update/flavor/:flavor/:platform/:channel-mac.yml
   // GET /update/flavor/:flavor/:platform/:channel.yml
-  'GET /update/flavor/:flavor/:platform/:channelFileName(.*\\.yml)': {
+  'GET /update/flavor/:flavor/:platform/:channelFileName': {
     controller: 'VersionController',
     action: 'electronUpdaterYmlFile',
     skipAssets: false,
+    // Skip not ending with yml / yaml
+    skipRegex: /^(?!.*\.(yml|yaml)$).*$/,
   },
 
   'GET /notes/:version/:flavor?': 'VersionController.releaseNotes',
