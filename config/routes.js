@@ -20,6 +20,8 @@
  * http://sailsjs.org/#!/documentation/concepts/Routes/RouteTargetSyntax.html
  */
 
+const notYamlRegex = /^(?!.*\.(yml|yaml)(\?.*)?$).*$/;
+
 module.exports.routes = {
 
   '/': { view: 'homepage' },
@@ -58,7 +60,7 @@ module.exports.routes = {
     action: 'electronUpdaterYmlFile',
     skipAssets: false,
     // Skip not ending with yml / yaml
-    skipRegex: /^(?!.*\.(yml|yaml)$).*$/,
+    skipRegex: notYamlRegex,
   },
   'GET /update/:platform/:version': 'VersionController.general',
   'GET /update/:platform/:channel/latest.yml': 'VersionController.electronUpdaterWin',
@@ -81,7 +83,7 @@ module.exports.routes = {
     action: 'electronUpdaterYmlFile',
     skipAssets: false,
     // Skip not ending with yml / yaml
-    skipRegex: /^(?!.*\.(yml|yaml)$).*$/,
+    skipRegex: notYamlRegex,
   },
 
   'GET /notes/:version/:flavor?': 'VersionController.releaseNotes',
